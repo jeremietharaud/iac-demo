@@ -1,0 +1,6 @@
+*.log
+*.tfstate
+*.tfstate.*
+**/TRASH
+.DS_Store
+.terraform
