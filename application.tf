@@ -14,16 +14,6 @@ resource "aws_launch_configuration" "instances" {
   user_data_base64 = base64encode(templatefile("${path.module}/user_data.tpl", {}))
 }
 
-data "null_data_source" "asg_tags" {
-  count = length(keys(var.tags))
-
-  inputs = {
-    key                 = keys(var.tags)[count.index]
-    value               = values(var.tags)[count.index]
-    propagate_at_launch = true
-  }
-}
-
 resource "aws_autoscaling_group" "instances" {
   name_prefix          = "${local.resource_name}-"
   vpc_zone_identifier  = aws_subnet.public.*.id
@@ -36,7 +26,15 @@ resource "aws_autoscaling_group" "instances" {
 
   target_group_arns = [aws_lb_target_group.default.arn]
 
-  tags = data.null_data_source.asg_tags.*.outputs
+  dynamic "tag" {
+    for_each = var.tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
+  }
 
   lifecycle {
     create_before_destroy = true

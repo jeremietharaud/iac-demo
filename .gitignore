@@ -3,4 +3,4 @@
 *.tfstate.*
 **/TRASH
 .DS_Store
-.terraform
+.terraform*

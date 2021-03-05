@@ -2,7 +2,7 @@ resource "aws_acm_certificate" "cert" {
   domain_name       = var.domain_name
   validation_method = "DNS"
 
-  tags = merge(var.tags, map("Name", "${var.domain_name}"))
+  tags = merge(var.tags, map("Name", var.domain_name))
 }
 
 resource "aws_route53_record" "cert" {
